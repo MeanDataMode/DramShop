@@ -16,3 +16,6 @@ How it represented in Data
             Drink1      Drink2      Drink3      Drink4      Total$
 Customer1   .25         .25         .25         .25         1.00
 Customer2   .00         .00         .5          .5          1.00
+
+
+
