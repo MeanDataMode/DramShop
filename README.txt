@@ -2,7 +2,7 @@
 
 Dataset:  data_Cust_Drink_Percent_Row.csv
             - Only contains know customers that have had more than three (3) different drinks.
-            - The column values are a percent of the the specific customers total drink spend: Example Belwo
+            - The column values are a percent of the the specific customers total drink spend: Example Below
             
 example:
 
