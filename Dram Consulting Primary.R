@@ -82,8 +82,13 @@ for (n in 1:how_many_recomendations) {
 }
 
 
-# Look at one drink in particular
-the_drink = "Abyss.Deschutes"
-johns_actual[,the_drink]
-johns_predicted[,the_drink]
-johns_recomendations[,the_drink]
+one = "DesmetBelgianRed.Blacksmith"
+two = "KatabaticButte.CallIrishRed" 
+three = "SteepN.Deep.LonePeak" 
+four = "APIPA.Katabatic" 
+five = "MiamiVicePineappleIPA.DraughtWorks"
+the_drink = one
+john_actual[,the_drink]
+john_predicted[,the_drink]
+john_recomendations[,the_drink]
+
