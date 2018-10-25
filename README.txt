@@ -12,7 +12,7 @@ Customer1   $5.00       $5.00       $5.00       $5.00       $20.00
 Customer2   $0.00       $0.00       $10.00      $10.00      $20.00
 
 
-How it represented in Data
+How the customer and drinks are represented in Data
             Drink1      Drink2      Drink3      Drink4      Total$
 Customer1   .25         .25         .25         .25         1.00
 Customer2   .00         .00         .5          .5          1.00
