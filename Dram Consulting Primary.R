@@ -88,7 +88,6 @@ for (n in 1:how_many_recomendations) {
         print(top_recomendations[n])
 }
 
-
 botched_recomendations <- sort(john_recomendations, decreasing = FALSE)
 how_many_recomendations = 5
 for (n in 1:how_many_recomendations) {
@@ -99,9 +98,3 @@ the_drink = "Abyss.Deschutes"
 john_actual[,the_drink]
 john_predicted[,the_drink]
 john_recomendations[,the_drink]
-
-
-# Training Data
-training_svd_irlba <- svd_irlba$v
-
-
