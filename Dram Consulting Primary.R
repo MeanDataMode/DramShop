@@ -20,7 +20,7 @@ library(rpart)
 
 # Import and structure the data
 start.time <- Sys.time()
-data = read.csv(file = "data_Cust_Drink_Percent_Row.csv", header = T, sep = ",")
+data <- read.csv(file = "data_Cust_Drink_Percent_Row.csv", header = T, sep = ",")
 rownames(data) <- data[,1]
 data <- data[,-1]
 data <- data[,which(colSums(data) != 0)] # Remove empty Columns
@@ -32,17 +32,17 @@ total.time
 ######################################
 # Build SVD model and check variance
 start.time <- Sys.time()
-O = data / sum(data)
-E = rowSums(O) %o% colSums(O)
-Z = (O - E) / sqrt(E)
+O <- data / sum(data)
+E <- rowSums(O) %o% colSums(O)
+Z <- (O - E) / sqrt(E)
 SVD = svd(x = Z)
 # SVD$u %*% diag(SVD$d) %*% t(SVD$v)
-variance.explained = prop.table(svd(Z)$d^2)
+variance.explained <- prop.table(svd(Z)$d^2)
 total.time <- Sys.time() - start.time
 total.time
         # 10.43311 mins
         # 10.03534 mins
-number_of_factors = 735
+number_of_factors <- 735
 sum(variance.explained[1:number_of_factors])  # Looking for >= 70% explained
 
 
@@ -68,7 +68,7 @@ johns_recomendations <- johns_predicted - johns_actual
 
 # Top Five to recommend to customer
 top_recomendations <- sort(johns_recomendations, decreasing = TRUE)
-how_many_recomendations = 5
+how_many_recomendations <- 5
 for (n in 1:how_many_recomendations) {
         print(top_recomendations[n])
 }
@@ -76,18 +76,18 @@ for (n in 1:how_many_recomendations) {
 
 # Top 5 drinks that the customer purchased more than our model anticipated
 botched_recomendations <- sort(johns_recomendations, decreasing = FALSE)
-how_many_recomendations = 5
+how_many_recomendations <- 5
 for (n in 1:how_many_recomendations) {
         print(botched_recomendations[n])
 }
 
 
-one = "DesmetBelgianRed.Blacksmith"
-two = "KatabaticButte.CallIrishRed" 
-three = "SteepN.Deep.LonePeak" 
-four = "APIPA.Katabatic" 
-five = "MiamiVicePineappleIPA.DraughtWorks"
-the_drink = one
+one <- "DesmetBelgianRed.Blacksmith"
+two <- "KatabaticButte.CallIrishRed" 
+three <- "SteepN.Deep.LonePeak" 
+four <- "APIPA.Katabatic" 
+five <- "MiamiVicePineappleIPA.DraughtWorks"
+the_drink <- one
 john_actual[,the_drink]
 john_predicted[,the_drink]
 john_recomendations[,the_drink]
