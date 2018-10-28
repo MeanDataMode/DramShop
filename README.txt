@@ -12,6 +12,7 @@ Customer1   $5.00       $5.00       $5.00       $5.00       $20.00
 Customer2   $0.00       $0.00       $10.00      $10.00      $20.00
 
 
+data_Cust_Drink_Percent_Row.csv
 How the customer and drinks are represented in Data
             Drink1      Drink2      Drink3      Drink4      Total$
 Customer1   .25         .25         .25         .25         1.00
