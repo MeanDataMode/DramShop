@@ -1,94 +1,63 @@
-# Tony Layton
+# By Anthony Layton (Tony Layton)
 # 
-# Install Packages (not all of these are required)
-#install.packages("MASS")
-##install.packages("foreign")
-#install.packages("svd")
-#install.packages("irlba")
-#install.packages("prcomp")
-#install.packages("rpart")
 
-
+library(psych)
 library(Matrix)
 library(MASS)
 library(foreign)
 library(irlba)
 library(svd)
-library(prcomp)
 library(rpart)
+library(ggplot2)
+library(ggfortify)
+library(dplyr)
+
+
+customers_recommendations <- function (SVD_data, customer, available_drink_list = available_drinks) {
+    cust_recommend <- SVD_data[customer,]
+    avail_cust_recommend <- cust_recommend[,available_drinks]
+    top_recommendations <- sort(avail_cust_recommend, decreasing = TRUE)
+    top_recommendations <- format(top_recommendations, digits = 3)
+    print(top_recommendations[1:5])
+}
+
+
+check_var <- function(SVD, number_of_factors = 800) {
+    var1 <- prop.table(SVD$d^2)
+    print(sum(var1[1:number_of_factors]))
+}
+
 
 
 # Import and structure the data
-start.time <- Sys.time()
-data <- read.csv(file = "data_Cust_Drink_Percent_Row.csv", header = T, sep = ",")
+data <- read.csv(file = "data_RealCust_Drink_qty.csv", header = T, sep = ",", encoding = 'utf-8')
 rownames(data) <- data[,1]
 data <- data[,-1]
+data[data == 0.0] <- 0.0
+data[data < 1.0] <- 0.0  # Replaces all values less than 1 with 0
+data[data == 1.0] <- 0.5  # Replaces all values equal to 1 with .5 
+data[data > 1.0] <- 1.0  # Replaces all values equal to 1 with .5 greater than 0 with 1
+data <- data[which(rowSums(data) != 0),] # Remove empty Columns
 data <- data[,which(colSums(data) != 0)] # Remove empty Columns
-data <- data[which(rowSums(data) != 0),] # removes empty Rows
-total.time <- Sys.time() - start.time
-total.time
 
 
-######################################
-# Build SVD model and check variance
-start.time <- Sys.time()
-O <- data / sum(data)
-E <- rowSums(O) %o% colSums(O)
-Z <- (O - E) / sqrt(E)
-SVD = svd(x = Z)
-# SVD$u %*% diag(SVD$d) %*% t(SVD$v)
-variance.explained <- prop.table(svd(Z)$d^2)
-total.time <- Sys.time() - start.time
-total.time
-        # 10.43311 mins
-        # 10.03534 mins
-number_of_factors <- 735
-sum(variance.explained[1:number_of_factors])  # Looking for >= 70% explained
-
-
-# Reducing the Matrix down to nv
-# the irlba is a faster way of doing SVD
-start.time <- Sys.time()
-svd_irlba <- irlba(t(data), nv = number_of_factors,maxit = (number_of_factors*2))  # (TIP:nu = nv)
-reduced_matrix <- (svd_irlba$u %*% diag(svd_irlba$d) %*% t(svd_irlba$v))
-total.time <- Sys.time() - start.time
-total.time
-
-
-# Shows me how far off we were 
-# (-1 = THe more the negative the less we need to recomend. (our model underestimated the customers purchases)
-# 1 = THe higher the positive the stronger the recomendation to Try.
-recomendations <- reduced_matrix - data
-
-
-# Look at an actual customers recomendations ('John Doe' aka 'Riley Zachariasen')
-johns_actual <- data["Riley_Zachariasen",]
-johns_predicted <- recomendations["Riley_Zachariasen",]
-johns_recomendations <- johns_predicted - johns_actual
-
-# Top Five to recommend to customer
-top_recomendations <- sort(johns_recomendations, decreasing = TRUE)
-how_many_recomendations <- 5
-for (n in 1:how_many_recomendations) {
-        print(top_recomendations[n])
+# Builds list of beer that has been sold in the last 30 or 60 days.
+drinks <- read.csv(file = "sold_Last60.csv", header = F, sep = ",", encoding = 'utf-8')
+available_drinks <- c()
+for (drink in drinks) {
+    available_drinks <- drink
 }
 
 
-# Top 5 drinks that the customer purchased more than our model anticipated
-botched_recomendations <- sort(johns_recomendations, decreasing = FALSE)
-how_many_recomendations <- 5
-for (n in 1:how_many_recomendations) {
-        print(botched_recomendations[n])
-}
+# builds SVD model
+SVD <- svd(x = t(data))
+check_var(SVD = SVD, number_of_factors = 326) # Check Variance # Looking for >= 70% explained
+number_of_factors = 326
+reduced_matrix <- (SVD$u[,1:number_of_factors] %*% diag(SVD$d[1:number_of_factors]) %*% t(SVD$v[,1:number_of_factors]))
+recommendations <- reduced_matrix - data 
 
 
-one <- "DesmetBelgianRed.Blacksmith"
-two <- "KatabaticButte.CallIrishRed" 
-three <- "SteepN.Deep.LonePeak" 
-four <- "APIPA.Katabatic" 
-five <- "MiamiVicePineappleIPA.DraughtWorks"
-the_drink <- one
-john_actual[,the_drink]
-john_predicted[,the_drink]
-john_recomendations[,the_drink]
-
+# Write to file
+cust_names <- row.names(recommendations)
+save(cust_names, file="cust_names.Rda")
+save(recommendations, file="recommendations.Rda")
