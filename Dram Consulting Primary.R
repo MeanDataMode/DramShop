@@ -30,17 +30,17 @@ customers_recommendations <- function (SVD_data, customer, available_drink_list 
 }
 
 
-w <- function (data) {
+save_final_data_set <- function (data) {
     write.csv(data, file = "final_data_set.csv", fileEncoding = "utf-8")
 }
 
 
-ww <- function (data) {
+save_completed_svd <- function (data) {
     write.csv(data, file = "completed_svd.csv", fileEncoding = "utf-8")
 }
 
 
-www <- function (data) {
+save_drinks <- function (data) {
     write.csv(data, file = "drinks.csv", fileEncoding = "utf-8")
 }
 
@@ -74,7 +74,7 @@ data <- data[,which(colSums(data) != 0)] # Remove empty Columns
 drinks <- read.csv(file = "sold_Last60.csv", header = F, sep = ",", encoding = 'utf-8')
 available_drinks <- c()
 for (drink in drinks) {
-    available_drinks <- drink
+    available_drinks <- c(available_drinks, drink)
 }
 total.time <- Sys.time() - start.time
 total.time  # 19 secs
@@ -86,7 +86,7 @@ check_var(SVD = SVD, number_of_factors = 326) # Check Variance # Looking for >= 
 
 number_of_factors = 326
 reduced_matrix <- (SVD$u[,1:number_of_factors] %*% diag(SVD$d[1:number_of_factors]) %*% t(SVD$v[,1:number_of_factors]))
-recommendations <- reduced_matrix - data # SVA  (Centered DATA)
+recommendations <- reduced_matrix - data # SVA
 
 
 save(recommendations, file="recommendations.Rda")
@@ -99,5 +99,5 @@ save(cust_names, file="cust_names.Rda")
 # Call Functions
 customers_recommendations(SVD_data = recommendations, customer = "John_Chandler", available_drink_list = available_drinks)
 f(recommendations)
-ww(recommendations)
+save_completed_svd(recommendations)
 
